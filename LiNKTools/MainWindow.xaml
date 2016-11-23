@@ -10,7 +10,21 @@
         <TextBox x:Name="textBoxFilePath" HorizontalAlignment="Left" Height="23" Margin="10,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="417"/>
         <Label x:Name="labelFilePath" Content="File Path" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="170"/>
         <Button x:Name="buttonBrowse" Content="Browse" HorizontalAlignment="Right" Margin="0,44,10,0" VerticalAlignment="Top" Width="75" Height="23" Click="buttonBrowse_Click"/>
-        <Button x:Name="buttonTestConnection" Content="Test Connection" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="497" Height="104" Click="buttonTestConnection_Click"/>
+        <Button x:Name="buttonTestConnection" Content="Test Connection" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="497" Height="33" Click="buttonTestConnection_Click"/>
+        <ListBox x:Name="listBoxSessions" Height="177" Margin="10,0,10,10" VerticalAlignment="Bottom" Width="497" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Sessions}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding StartTime}" Grid.Column="1"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
     </Grid>
 </Window>

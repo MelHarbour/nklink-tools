@@ -1,6 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using LiNKTools.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Linq;
@@ -23,9 +25,18 @@ namespace LiNKTools
     /// </summary>
     public partial class MainWindow : Window
     {
+        public SessionListViewModel ViewModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+
+            ViewModel = new SessionListViewModel();
+
+            ViewModel.Sessions.Add(new Session() { Name = "First Session", StartTime = 1 });
+            ViewModel.Sessions.Add(new Session() { Name = "Second Session", StartTime = 2 });
+
+            this.DataContext = ViewModel;
+            //listBoxSessions.ItemsSource = Items;
         }
 
         private void buttonBrowse_Click(object sender, RoutedEventArgs e)
@@ -47,7 +58,7 @@ namespace LiNKTools
                 cnn.Open();
 
                 SQLiteCommand command = new SQLiteCommand(
-                    "SELECT * FROM SpeedCoaches", cnn);
+                    "SELECT Name, StartTime FROM Sessions", cnn);
 
                 SQLiteDataReader reader = command.ExecuteReader();
 
