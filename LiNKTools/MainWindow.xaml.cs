@@ -1,4 +1,5 @@
 ﻿using LiNKTools.ViewModels;
+using LiNKTools.Model;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,6 @@ namespace LiNKTools
             ViewModel = new SessionListViewModel();
 
             DataContext = ViewModel;
-            //listBoxSessions.ItemsSource = Items;
         }
 
         private void buttonBrowse_Click(object sender, RoutedEventArgs e)
@@ -55,16 +55,47 @@ namespace LiNKTools
                 cnn.Open();
 
                 SQLiteCommand command = new SQLiteCommand(
-                    "SELECT Name, StartTime FROM Sessions", cnn);
+                    "SELECT PK_SessionID, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed FROM Sessions", cnn);
 
                 SQLiteDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    ViewModel.Sessions.Add(new Session((string)reader[0], (long)reader[1]));
+                    int id = (int)(long)reader[0];
+                    string name = (string)reader[1];
+                    long startTime = (long)reader[2];
+                    int totalElapsedTime = (int)(long)reader[3];
+                    int totalDistance = (int)(long)reader[4];
+                    double strokeRate = Convert.ToDouble((long)reader[5]) / 2;
+                    int averageHeartRate = reader.IsDBNull(6) ? 0 : (int)(long)reader[6];
+                    double speed = ((double)reader[7]) / 100;
+
+                    ViewModel.Sessions.Add(new Session(id, name, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed));
                 }
 
                 reader.Close();
+            }
+        }
+
+        private void buttonExport_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".tcx";
+
+            if (dialog.ShowDialog() == true)
+            {
+                Session session = (Session)listBoxSessions.SelectedItem;
+
+                DbProviderFactory fact = DbProviderFactories.GetFactory("System.Data.SQLite");
+                using (SQLiteConnection cnn = (SQLiteConnection)fact.CreateConnection())
+                {
+                    cnn.ConnectionString = "Data Source=" + textBoxFilePath.Text;
+                    cnn.Open();
+
+                    SQLiteCommand command = new SQLiteCommand(
+                        "SELECT Name, StartTime FROM Sessions", cnn);
+
+                }
             }
         }
     }

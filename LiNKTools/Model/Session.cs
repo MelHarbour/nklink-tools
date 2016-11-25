@@ -5,19 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace LiNKTools
+namespace LiNKTools.Model
 {
     public class Session
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime StartTime { get; set; }
+        public List<Interval> Intervals = new List<Interval>();
+        public int TotalElapsedTime { get; set; }
+        public int TotalDistance { get; set; }
+        public double AverageStrokeRate { get; set; }
+        public int AverageHeartRate { get; set; }
+        public double AverageSpeed { get; set; }
 
         public Session() { }
 
-        public Session(string name, long startTime)
+        public Session(int id, string name, long startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed)
         {
+            Id = id;
             Name = name;
             SetStartTime(startTime);
+            TotalElapsedTime = totalElapsedTime;
+            TotalDistance = totalDistance;
+            AverageStrokeRate = averageStrokeRate;
+            AverageHeartRate = averageHeartRate;
+            AverageSpeed = AverageSpeed;
         }
 
         private void SetStartTime(long value)
