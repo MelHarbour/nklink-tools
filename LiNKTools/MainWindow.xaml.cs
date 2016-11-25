@@ -55,7 +55,7 @@ namespace LiNKTools
                 cnn.Open();
 
                 SQLiteCommand command = new SQLiteCommand(
-                    "SELECT PK_SessionID, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed FROM Sessions", cnn);
+                    "SELECT PK_SessionId, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed FROM Sessions", cnn);
 
                 SQLiteDataReader reader = command.ExecuteReader();
 
@@ -93,8 +93,25 @@ namespace LiNKTools
                     cnn.Open();
 
                     SQLiteCommand command = new SQLiteCommand(
-                        "SELECT Name, StartTime FROM Sessions", cnn);
+                        "SELECT PK_IntervalId, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed, TotalStrokeCount FROM Intervals", cnn);
 
+                    SQLiteDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        int id = (int)(long)reader[0];
+                        long startTime = (long)reader[1];
+                        int totalElapsedTime = (int)(long)reader[2];
+                        int totalDistance = (int)(long)reader[3];
+                        double strokeRate = Convert.ToDouble((long)reader[4]) / 2;
+                        int averageHeartRate = reader.IsDBNull(5) ? 0 : (int)(long)reader[5];
+                        double speed = ((double)reader[6]) / 100;
+                        int totalStrokeCount = (int)(long)reader[7];
+
+                        session.Intervals.Add(new Interval(id, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, totalStrokeCount));
+                    }
+
+                    reader.Close();
                 }
             }
         }
