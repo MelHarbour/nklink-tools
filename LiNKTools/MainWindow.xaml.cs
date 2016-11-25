@@ -32,10 +32,7 @@ namespace LiNKTools
 
             ViewModel = new SessionListViewModel();
 
-            ViewModel.Sessions.Add(new Session() { Name = "First Session", StartTime = 1 });
-            ViewModel.Sessions.Add(new Session() { Name = "Second Session", StartTime = 2 });
-
-            this.DataContext = ViewModel;
+            DataContext = ViewModel;
             //listBoxSessions.ItemsSource = Items;
         }
 
@@ -62,7 +59,10 @@ namespace LiNKTools
 
                 SQLiteDataReader reader = command.ExecuteReader();
 
-                Console.WriteLine("Rows returned: " + reader.HasRows);
+                while (reader.Read())
+                {
+                    ViewModel.Sessions.Add(new Session((string)reader[0], (long)reader[1]));
+                }
 
                 reader.Close();
             }
