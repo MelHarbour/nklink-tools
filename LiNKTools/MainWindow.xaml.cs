@@ -18,6 +18,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TcxTools;
+using System.Xml.Serialization;
+using System.IO;
+using System.Xml;
 
 namespace LiNKTools
 {
@@ -105,13 +109,23 @@ namespace LiNKTools
                         int totalDistance = (int)(long)reader[3];
                         double strokeRate = Convert.ToDouble((long)reader[4]) / 2;
                         int averageHeartRate = reader.IsDBNull(5) ? 0 : (int)(long)reader[5];
-                        double speed = ((double)reader[6]) / 100;
+                        double speed = Convert.ToDouble((long)reader[6]) / 100;
                         int totalStrokeCount = (int)(long)reader[7];
 
                         session.Intervals.Add(new Interval(id, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, totalStrokeCount));
                     }
 
                     reader.Close();
+                }
+
+                TrainingCenterDatabase tcd = new TrainingCenterDatabase();
+                tcd.Workouts.Add(new Workout() { Name = "Test Workout" });
+
+                XmlSerializer serializer = new XmlSerializer(typeof(TrainingCenterDatabase));
+
+                using (XmlWriter writer = XmlWriter.Create(dialog.FileName))
+                {
+                    serializer.Serialize(writer, tcd);
                 }
             }
         }
