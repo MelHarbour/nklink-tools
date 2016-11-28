@@ -18,10 +18,11 @@ namespace LiNKTools.Model
         public double AverageStrokeRate { get; set; }
         public int AverageHeartRate { get; set; }
         public double AverageSpeed { get; set; }
+        public SpeedInput SpeedInput { get; set; }
 
         public Session() { }
 
-        public Session(int id, string name, long startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed)
+        public Session(int id, string name, long startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed, SpeedInput speedInput)
         {
             Id = id;
             Name = name;
@@ -31,6 +32,7 @@ namespace LiNKTools.Model
             AverageStrokeRate = averageStrokeRate;
             AverageHeartRate = averageHeartRate;
             AverageSpeed = AverageSpeed;
+            SpeedInput = speedInput;
         }
 
         private void SetStartTime(long value)
@@ -46,5 +48,11 @@ namespace LiNKTools.Model
             
             StartTime = new DateTime(year, month, day, hour, minute, second);
         }
+    }
+
+    public enum SpeedInput
+    {
+        Gps,
+        Impeller
     }
 }

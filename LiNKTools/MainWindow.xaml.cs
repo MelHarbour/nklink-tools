@@ -59,7 +59,7 @@ namespace LiNKTools
                 cnn.Open();
 
                 SQLiteCommand command = new SQLiteCommand(
-                    "SELECT PK_SessionId, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed FROM Sessions", cnn);
+                    "SELECT PK_SessionId, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed, SpeedInput FROM Sessions", cnn);
 
                 SQLiteDataReader reader = command.ExecuteReader();
 
@@ -73,8 +73,9 @@ namespace LiNKTools
                     double strokeRate = Convert.ToDouble((long)reader[5]) / 2;
                     int averageHeartRate = reader.IsDBNull(6) ? 0 : (int)(long)reader[6];
                     double speed = ((double)reader[7]) / 100;
+                    SpeedInput input = (SpeedInput)reader[8];
 
-                    ViewModel.Sessions.Add(new Session(id, name, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed));
+                    ViewModel.Sessions.Add(new Session(id, name, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, input));
                 }
 
                 reader.Close();
@@ -104,7 +105,7 @@ namespace LiNKTools
                     command.Parameters.Add(sessionParam);
 
                     SQLiteCommand dataRecordCommand = new SQLiteCommand(
-                        "SELECT PK_DataRecordId, ElapsedTime, Latitude, Longitude, SpeedGps, SpeedImpeller, DistanceGps, DistanceImpeller, StrokeRate, StrokeCount, HeartRate, Calories" +
+                        "SELECT PK_DataRecordId, ElapsedTime, Latitude, Longitude, SpeedGps, SpeedImpeller, DistanceGps, DistanceImpeller, StrokeRate, HeartRate" +
                         " FROM DataRecords WHERE FK_IntervalId = @intervalId AND Type = 0", cnn); // Type filtered to 0 to just pick up strokes
 
                     SQLiteParameter intervalParam = new SQLiteParameter("sessionId", System.Data.DbType.Int32);
@@ -132,6 +133,15 @@ namespace LiNKTools
                         while (dataRecordReader.Read())
                         {
                             DataRecord record = new DataRecord();
+                            record.ElapsedTime = (int)reader[1];
+                            record.Latitude = (double)reader[2];
+                            record.Longitude = (double)reader[3];
+                            record.SpeedGps = Convert.ToDouble((long)reader[4]) / 100;
+                            record.SpeedImpeller = Convert.ToDouble((long)reader[5]) / 100;
+                            record.DistanceGps = (int)reader[6];
+                            record.DistanceImpeller = (int)reader[7];
+                            record.StrokeRate = Convert.ToDouble((long)reader[8]) / 2;
+                            record.HeartRate = (int)reader[9];
                         }
 
                         session.Intervals.Add(interval);
@@ -152,16 +162,35 @@ namespace LiNKTools
                     lap.Intensity = Intensity.Active;
                     lap.TriggerMethod = TriggerMethod.Manual;
 
-                    // TODO: Maximum Speed, Calories, Maximum Heart Rate, Cadence/Stroke Rate (type conversion)
+                    // TODO: Cadence/Stroke Rate (type conversion)
+                    double maxSpeed = 0;
+                    byte maxHeartRate = 0;
 
                     foreach (DataRecord record in interval.DataRecords)
                     {
                         Trackpoint trackpoint = new Trackpoint();
                         trackpoint.Position = new Position() { LatitudeDegrees = record.Latitude, LongitudeDegrees = record.Longitude };
                         trackpoint.Time = lap.StartTime.AddMilliseconds(record.ElapsedTime);
-
+                        trackpoint.HeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)record.HeartRate };
+                        if (trackpoint.HeartRateBpm.Value > maxHeartRate)
+                            maxHeartRate = trackpoint.HeartRateBpm.Value;
+                        
+                        switch (session.SpeedInput)
+                        {
+                            case SpeedInput.Gps:
+                                if (record.SpeedGps > maxSpeed)
+                                    maxSpeed = record.SpeedGps;
+                                break;
+                            case SpeedInput.Impeller:
+                                if (record.SpeedImpeller > maxSpeed)
+                                    maxSpeed = record.SpeedImpeller;
+                                break;
+                        }
                         lap.Track.Add(trackpoint);
                     }
+
+                    lap.MaximumSpeed = maxSpeed;
+                    lap.MaximumHeartRateBpm = new HeartRateInBeatsPerMinute() { Value = maxHeartRate };
 
                     activity.Lap.Add(lap);
                 }

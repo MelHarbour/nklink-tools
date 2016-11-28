@@ -18,9 +18,7 @@ namespace LiNKTools.Model
         public int DistanceGps { get; set; }
         public int DistanceImpeller { get; set; }
         public double StrokeRate { get; set; }
-        public int StrokeCount { get; set; }
         public int HeartRate { get; set; }
-        public int BaseElapsedTime { get; set; }
     }
 
     public enum DataRecordType
