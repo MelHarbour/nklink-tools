@@ -97,7 +97,18 @@ namespace LiNKTools
                     cnn.Open();
 
                     SQLiteCommand command = new SQLiteCommand(
-                        "SELECT PK_IntervalId, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed, TotalStrokeCount FROM Intervals", cnn);
+                        "SELECT PK_IntervalId, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed, TotalStrokeCount FROM Intervals" +
+                        " WHERE FK_SessionId = @sessionId", cnn);
+                    SQLiteParameter sessionParam = new SQLiteParameter("sessionId", System.Data.DbType.Int32);
+                    sessionParam.Value = session.Id;
+                    command.Parameters.Add(sessionParam);
+
+                    SQLiteCommand dataRecordCommand = new SQLiteCommand(
+                        "SELECT PK_DataRecordId, ElapsedTime, Latitude, Longitude, SpeedGps, SpeedImpeller, DistanceGps, DistanceImpeller, StrokeRate, StrokeCount, HeartRate, Calories" +
+                        " FROM DataRecords WHERE FK_IntervalId = @intervalId AND Type = 0", cnn); // Type filtered to 0 to just pick up strokes
+
+                    SQLiteParameter intervalParam = new SQLiteParameter("sessionId", System.Data.DbType.Int32);
+                    command.Parameters.Add(intervalParam);
 
                     SQLiteDataReader reader = command.ExecuteReader();
 
@@ -112,14 +123,51 @@ namespace LiNKTools
                         double speed = Convert.ToDouble((long)reader[6]) / 100;
                         int totalStrokeCount = (int)(long)reader[7];
 
-                        session.Intervals.Add(new Interval(id, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, totalStrokeCount));
+                        Interval interval = new Interval(id, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, totalStrokeCount);
+
+                        intervalParam.Value = interval.Id;
+
+                        SQLiteDataReader dataRecordReader = dataRecordCommand.ExecuteReader();
+
+                        while (dataRecordReader.Read())
+                        {
+                            DataRecord record = new DataRecord();
+                        }
+
+                        session.Intervals.Add(interval);
                     }
 
                     reader.Close();
                 }
+                
+                Activity activity = new Activity() { Id = session.StartTime, Sport = Sport.Other };
+                activity.Creator = new Device() { Name = "SpeedCoach GPS" };
+
+                foreach (Interval interval in session.Intervals) {
+                    ActivityLap lap = new ActivityLap();
+                    lap.StartTime = interval.StartTime;
+                    lap.TotalTimeSeconds = interval.TotalElapsedTime;
+                    lap.DistanceMeters = interval.TotalDistance;
+                    lap.AverageHeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)interval.AverageHeartRate };
+                    lap.Intensity = Intensity.Active;
+                    lap.TriggerMethod = TriggerMethod.Manual;
+
+                    // TODO: Maximum Speed, Calories, Maximum Heart Rate, Cadence/Stroke Rate (type conversion)
+
+                    foreach (DataRecord record in interval.DataRecords)
+                    {
+                        Trackpoint trackpoint = new Trackpoint();
+                        trackpoint.Position = new Position() { LatitudeDegrees = record.Latitude, LongitudeDegrees = record.Longitude };
+                        trackpoint.Time = lap.StartTime.AddMilliseconds(record.ElapsedTime);
+
+                        lap.Track.Add(trackpoint);
+                    }
+
+                    activity.Lap.Add(lap);
+                }
 
                 TrainingCenterDatabase tcd = new TrainingCenterDatabase();
-                tcd.Workouts.Add(new Workout() { Name = "Test Workout" });
+                tcd.Activities.Activity.Add(activity);
 
                 XmlSerializer serializer = new XmlSerializer(typeof(TrainingCenterDatabase));
 
