@@ -19,6 +19,8 @@ namespace LiNKTools
         {
             IUnityContainer container = new UnityContainer();
             container.RegisterType<IFileService, FileService>();
+            var mainWindow = container.Resolve<MainWindow>();
+            mainWindow.Show();
         }
     }
 }
