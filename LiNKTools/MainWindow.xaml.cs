@@ -22,6 +22,8 @@ using TcxTools;
 using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
+using Microsoft.Practices.Unity;
+using LiNKTools.Services;
 
 namespace LiNKTools
 {
@@ -30,10 +32,13 @@ namespace LiNKTools
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IUnityContainer _container;
+
         public SessionListViewModel ViewModel { get; set; }
-        public MainWindow()
+        public MainWindow(IUnityContainer container)
         {
             InitializeComponent();
+            _container = container;
 
             ViewModel = new SessionListViewModel();
 
@@ -42,12 +47,9 @@ namespace LiNKTools
 
         private void buttonBrowse_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.DefaultExt = ".sqlite";
-            openFileDialog.Filter = "SQLite Databases (*.sqlite)|*.sqlite";
+            var fileService = _container.Resolve<IFileService>();
 
-            if (openFileDialog.ShowDialog() == true)
-                textBoxFilePath.Text = openFileDialog.FileName;
+            ViewModel.FilePath = fileService.OpenFileDialog();
         }
 
         private void buttonTestConnection_Click(object sender, RoutedEventArgs e)
@@ -94,7 +96,7 @@ namespace LiNKTools
                 DbProviderFactory fact = DbProviderFactories.GetFactory("System.Data.SQLite");
                 using (SQLiteConnection cnn = (SQLiteConnection)fact.CreateConnection())
                 {
-                    cnn.ConnectionString = "Data Source=" + textBoxFilePath.Text;
+                    cnn.ConnectionString = "Data Source=" + ViewModel.FilePath;
                     cnn.Open();
 
                     SQLiteCommand command = new SQLiteCommand(

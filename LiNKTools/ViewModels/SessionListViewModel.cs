@@ -11,6 +11,9 @@ namespace LiNKTools.ViewModels
     public class SessionListViewModel
     {
         private ObservableCollection<Session> sessions = new ObservableCollection<Session>();
+
+        public string FilePath { get; set; }
+
         public ObservableCollection<Session> Sessions {
             get { return sessions; }
             set { sessions = value; }
