@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TcxTools;
 
 namespace LiNKTools.Model
 {
@@ -20,10 +21,10 @@ namespace LiNKTools.Model
 
         public List<DataRecord> DataRecords = new List<DataRecord>();
 
-        public Interval(int id, long startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed, int totalStrokeCount)
+        public Interval(int id, DateTime startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed, int totalStrokeCount)
         {
             Id = id;
-            SetStartTime(startTime);
+            StartTime = startTime;
             TotalElapsedTime = totalElapsedTime;
             TotalDistance = totalDistance;
             AverageStrokeRate = averageStrokeRate;
@@ -32,18 +33,18 @@ namespace LiNKTools.Model
             TotalStrokeCount = totalStrokeCount;
         }
 
-        private void SetStartTime(long value)
+        public Interval() { }
+
+        public ActivityLap ToLap()
         {
-            string hexValue = value.ToString("X").PadLeft(14, '0');
-
-            int year = int.Parse(hexValue.Substring(0, 4), NumberStyles.HexNumber);
-            int month = int.Parse(hexValue.Substring(4, 2), NumberStyles.HexNumber);
-            int day = int.Parse(hexValue.Substring(6, 2), NumberStyles.HexNumber);
-            int hour = int.Parse(hexValue.Substring(8, 2), NumberStyles.HexNumber);
-            int minute = int.Parse(hexValue.Substring(10, 2), NumberStyles.HexNumber);
-            int second = int.Parse(hexValue.Substring(12, 2), NumberStyles.HexNumber);
-
-            StartTime = new DateTime(year, month, day, hour, minute, second);
+            ActivityLap lap = new ActivityLap();
+            lap.StartTime = StartTime;
+            lap.TotalTimeSeconds = TotalElapsedTime;
+            lap.DistanceMeters = TotalDistance;
+            lap.AverageHeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)AverageHeartRate };
+            lap.Intensity = Intensity.Active;
+            lap.TriggerMethod = TriggerMethod.Manual;
+            return lap;
         }
     }
 }

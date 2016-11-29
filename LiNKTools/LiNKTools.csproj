@@ -83,6 +83,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\DataRecord.cs" />
     <Compile Include="Model\Interval.cs" />
+    <Compile Include="Model\NKDateTimeConverter.cs" />
     <Compile Include="Model\Session.cs" />
     <Compile Include="ViewModels\SessionListViewModel.cs" />
     <Page Include="MainWindow.xaml">

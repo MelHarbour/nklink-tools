@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TcxTools;
 
 namespace LiNKTools.Model
 {
@@ -19,6 +20,15 @@ namespace LiNKTools.Model
         public int DistanceImpeller { get; set; }
         public double StrokeRate { get; set; }
         public int HeartRate { get; set; }
+
+        public Trackpoint ToTrackpoint(DateTime startTime)
+        {
+            Trackpoint trackpoint = new Trackpoint();
+            trackpoint.Position = new Position() { LatitudeDegrees = Latitude, LongitudeDegrees = Longitude };
+            trackpoint.Time = startTime.AddMilliseconds(ElapsedTime);
+            trackpoint.HeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)HeartRate };
+            return trackpoint;
+        }
     }
 
     public enum DataRecordType

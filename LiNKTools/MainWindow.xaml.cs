@@ -67,7 +67,7 @@ namespace LiNKTools
                 {
                     int id = (int)(long)reader[0];
                     string name = (string)reader[1];
-                    long startTime = (long)reader[2];
+                    DateTime startTime = NKDateTimeConverter.NKToClr((long)reader[2]);
                     int totalElapsedTime = (int)(long)reader[3];
                     int totalDistance = (int)(long)reader[4];
                     double strokeRate = Convert.ToDouble((long)reader[5]) / 2;
@@ -116,7 +116,7 @@ namespace LiNKTools
                     while (reader.Read())
                     {
                         int id = (int)(long)reader[0];
-                        long startTime = (long)reader[1];
+                        DateTime startTime = NKDateTimeConverter.NKToClr((long)reader[1]);
                         int totalElapsedTime = (int)(long)reader[2];
                         int totalDistance = (int)(long)reader[3];
                         double strokeRate = Convert.ToDouble((long)reader[4]) / 2;
@@ -154,13 +154,7 @@ namespace LiNKTools
                 activity.Creator = new Device() { Name = "SpeedCoach GPS" };
 
                 foreach (Interval interval in session.Intervals) {
-                    ActivityLap lap = new ActivityLap();
-                    lap.StartTime = interval.StartTime;
-                    lap.TotalTimeSeconds = interval.TotalElapsedTime;
-                    lap.DistanceMeters = interval.TotalDistance;
-                    lap.AverageHeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)interval.AverageHeartRate };
-                    lap.Intensity = Intensity.Active;
-                    lap.TriggerMethod = TriggerMethod.Manual;
+                    ActivityLap lap = interval.ToLap();
 
                     // TODO: Cadence/Stroke Rate (type conversion)
                     double maxSpeed = 0;
@@ -168,10 +162,8 @@ namespace LiNKTools
 
                     foreach (DataRecord record in interval.DataRecords)
                     {
-                        Trackpoint trackpoint = new Trackpoint();
-                        trackpoint.Position = new Position() { LatitudeDegrees = record.Latitude, LongitudeDegrees = record.Longitude };
-                        trackpoint.Time = lap.StartTime.AddMilliseconds(record.ElapsedTime);
-                        trackpoint.HeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)record.HeartRate };
+                        Trackpoint trackpoint = record.ToTrackpoint(lap.StartTime);
+
                         if (trackpoint.HeartRateBpm.Value > maxHeartRate)
                             maxHeartRate = trackpoint.HeartRateBpm.Value;
                         

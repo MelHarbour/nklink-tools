@@ -22,31 +22,17 @@ namespace LiNKTools.Model
 
         public Session() { }
 
-        public Session(int id, string name, long startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed, SpeedInput speedInput)
+        public Session(int id, string name, DateTime startTime, int totalElapsedTime, int totalDistance, double averageStrokeRate, int averageHeartRate, double averageSpeed, SpeedInput speedInput)
         {
             Id = id;
             Name = name;
-            SetStartTime(startTime);
+            StartTime = startTime;
             TotalElapsedTime = totalElapsedTime;
             TotalDistance = totalDistance;
             AverageStrokeRate = averageStrokeRate;
             AverageHeartRate = averageHeartRate;
             AverageSpeed = AverageSpeed;
             SpeedInput = speedInput;
-        }
-
-        private void SetStartTime(long value)
-        {
-            string hexValue = value.ToString("X").PadLeft(14, '0');
-
-            int year = int.Parse(hexValue.Substring(0, 4), NumberStyles.HexNumber);
-            int month = int.Parse(hexValue.Substring(4, 2), NumberStyles.HexNumber);
-            int day = int.Parse(hexValue.Substring(6, 2), NumberStyles.HexNumber);
-            int hour = int.Parse(hexValue.Substring(8, 2), NumberStyles.HexNumber);
-            int minute = int.Parse(hexValue.Substring(10, 2), NumberStyles.HexNumber);
-            int second = int.Parse(hexValue.Substring(12, 2), NumberStyles.HexNumber);
-            
-            StartTime = new DateTime(year, month, day, hour, minute, second);
         }
     }
 
