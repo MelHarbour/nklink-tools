@@ -52,7 +52,7 @@ namespace LiNKTools
             ViewModel.FilePath = fileService.OpenFileDialog();
         }
 
-        private void buttonTestConnection_Click(object sender, RoutedEventArgs e)
+        private void buttonFetchSessions_Click(object sender, RoutedEventArgs e)
         {
             DbProviderFactory fact = DbProviderFactories.GetFactory("System.Data.SQLite");
             using (SQLiteConnection cnn = (SQLiteConnection)fact.CreateConnection())
