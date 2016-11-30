@@ -75,7 +75,7 @@ namespace LiNKTools
                     double strokeRate = Convert.ToDouble((long)reader[5]) / 2;
                     int averageHeartRate = reader.IsDBNull(6) ? 0 : (int)(long)reader[6];
                     double speed = ((double)reader[7]) / 100;
-                    SpeedInput input = (SpeedInput)reader[8];
+                    SpeedInput input = (SpeedInput)(long)reader[8];
 
                     ViewModel.Sessions.Add(new Session(id, name, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, input));
                 }
