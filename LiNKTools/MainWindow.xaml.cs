@@ -57,7 +57,7 @@ namespace LiNKTools
             DbProviderFactory fact = DbProviderFactories.GetFactory("System.Data.SQLite");
             using (SQLiteConnection cnn = (SQLiteConnection)fact.CreateConnection())
             {
-                cnn.ConnectionString = "Data Source=" + textBoxFilePath.Text;
+                cnn.ConnectionString = "Data Source=" + ViewModel.FilePath;
                 cnn.Open();
 
                 SQLiteCommand command = new SQLiteCommand(
@@ -192,11 +192,9 @@ namespace LiNKTools
                 TrainingCenterDatabase tcd = new TrainingCenterDatabase();
                 tcd.Activities.Activity.Add(activity);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(TrainingCenterDatabase));
-
                 using (XmlWriter writer = XmlWriter.Create(dialog.FileName))
                 {
-                    serializer.Serialize(writer, tcd);
+                    (new XmlSerializer(typeof(TrainingCenterDatabase))).Serialize(writer, tcd);
                 }
             }
         }
