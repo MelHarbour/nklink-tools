@@ -18,7 +18,18 @@ namespace LiNKTools.Services
             if (openFileDialog.ShowDialog() == true)
                 return openFileDialog.FileName;
             else
-                return String.Empty;
+                return string.Empty;
+        }
+
+        public string SaveFileDialog()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".tcx";
+
+            if (dialog.ShowDialog() == true)
+                return dialog.FileName;
+            else
+                return string.Empty;
         }
     }
 }

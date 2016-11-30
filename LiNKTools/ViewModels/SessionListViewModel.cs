@@ -13,12 +13,19 @@ namespace LiNKTools.ViewModels
     public class SessionListViewModel : INotifyPropertyChanged
     {
         private string filePath;
+        private string outputFilePath;
         private ObservableCollection<Session> sessions = new ObservableCollection<Session>();
 
         public string FilePath
         {
             get { return filePath; }
             set { SetField(ref filePath, value); }
+        }
+
+        public string OutputFilePath
+        {
+            get { return outputFilePath; }
+            set { SetField(ref outputFilePath, value); }
         }
 
         public ObservableCollection<Session> Sessions {

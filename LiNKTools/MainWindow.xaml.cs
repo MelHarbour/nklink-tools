@@ -86,10 +86,11 @@ namespace LiNKTools
 
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = ".tcx";
+            var fileService = _container.Resolve<IFileService>();
 
-            if (dialog.ShowDialog() == true)
+            ViewModel.OutputFilePath = fileService.SaveFileDialog();
+
+            if (!string.IsNullOrEmpty(ViewModel.OutputFilePath))
             {
                 Session session = (Session)listBoxSessions.SelectedItem;
 
@@ -192,7 +193,7 @@ namespace LiNKTools
                 TrainingCenterDatabase tcd = new TrainingCenterDatabase();
                 tcd.Activities.Activity.Add(activity);
 
-                using (XmlWriter writer = XmlWriter.Create(dialog.FileName))
+                using (XmlWriter writer = XmlWriter.Create(ViewModel.OutputFilePath))
                 {
                     (new XmlSerializer(typeof(TrainingCenterDatabase))).Serialize(writer, tcd);
                 }

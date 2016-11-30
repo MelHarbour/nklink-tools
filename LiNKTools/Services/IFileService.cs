@@ -9,5 +9,7 @@ namespace LiNKTools.Services
     public interface IFileService
     {
         string OpenFileDialog();
+
+        string SaveFileDialog();
     }
 }
