@@ -25,7 +25,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button x:Name="buttonExport" Content="Export" Margin="10,306,10,0" VerticalAlignment="Top" Height="37" Click="buttonExport_Click"/>
+        <Button x:Name="buttonExport" Content="Export to TCX" Margin="10,306,10,0" VerticalAlignment="Top" Height="37" Click="buttonExport_Click"/>
 
     </Grid>
 </Window>
