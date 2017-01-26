@@ -116,8 +116,8 @@ namespace LiNKTools
                         "SELECT PK_DataRecordId, ElapsedTime, Latitude, Longitude, SpeedGps, SpeedImpeller, DistanceGps, DistanceImpeller, StrokeRate, HeartRate" +
                         " FROM DataRecords WHERE FK_IntervalId = @intervalId AND Type = 0", cnn); // Type filtered to 0 to just pick up strokes
 
-                    SQLiteParameter intervalParam = new SQLiteParameter("sessionId", System.Data.DbType.Int32);
-                    command.Parameters.Add(intervalParam);
+                    SQLiteParameter intervalParam = new SQLiteParameter("intervalId", System.Data.DbType.Int32);
+                    dataRecordCommand.Parameters.Add(intervalParam);
 
                     SQLiteDataReader reader = command.ExecuteReader();
 
@@ -141,15 +141,15 @@ namespace LiNKTools
                         while (dataRecordReader.Read())
                         {
                             DataRecord record = new DataRecord();
-                            record.ElapsedTime = (int)reader[1];
-                            record.Latitude = (double)reader[2];
-                            record.Longitude = (double)reader[3];
-                            record.SpeedGps = Convert.ToDouble((long)reader[4]) / 100;
-                            record.SpeedImpeller = Convert.ToDouble((long)reader[5]) / 100;
-                            record.DistanceGps = (int)reader[6];
-                            record.DistanceImpeller = (int)reader[7];
-                            record.StrokeRate = Convert.ToDouble((long)reader[8]) / 2;
-                            record.HeartRate = (int)reader[9];
+                            record.ElapsedTime = (int)(long)dataRecordReader[1];
+                            record.Latitude = (double)dataRecordReader[2];
+                            record.Longitude = (double)dataRecordReader[3];
+                            record.SpeedGps = Convert.ToDouble((long)dataRecordReader[4]) / 100;
+                            record.SpeedImpeller = Convert.ToDouble((long)dataRecordReader[5]) / 100;
+                            record.DistanceGps = (int)(long)dataRecordReader[6];
+                            record.DistanceImpeller = (int)(long)dataRecordReader[7];
+                            record.StrokeRate = Convert.ToDouble((long)dataRecordReader[8]) / 2;
+                            record.HeartRate = (int)(long)dataRecordReader[9];
                         }
 
                         session.Intervals.Add(interval);
