@@ -33,6 +33,11 @@ namespace LiNKTools.ViewModels
             set { sessions = value; }
         }
 
+        public SessionListViewModel()
+        {
+            FilePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "LiNK for Windows\\Program Data\\nklinkdatabase.sqlite");
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

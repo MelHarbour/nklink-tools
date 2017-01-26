@@ -49,7 +49,9 @@ namespace LiNKTools
         {
             var fileService = _container.Resolve<IFileService>();
 
-            ViewModel.FilePath = fileService.OpenFileDialog();
+            string selectedFilePath = fileService.OpenFileDialog();
+            if (!string.IsNullOrEmpty(selectedFilePath))
+                ViewModel.FilePath = selectedFilePath;
         }
 
         private void buttonFetchSessions_Click(object sender, RoutedEventArgs e)
@@ -88,7 +90,10 @@ namespace LiNKTools
         {
             var fileService = _container.Resolve<IFileService>();
 
-            ViewModel.OutputFilePath = fileService.SaveFileDialog();
+            string selectedFile = fileService.SaveFileDialog();
+
+            if (!string.IsNullOrEmpty(selectedFile))
+                ViewModel.OutputFilePath = selectedFile;
 
             if (!string.IsNullOrEmpty(ViewModel.OutputFilePath))
             {

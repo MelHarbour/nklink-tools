@@ -14,6 +14,7 @@ namespace LiNKTools.Services
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.DefaultExt = ".sqlite";
             openFileDialog.Filter = "SQLite Databases (*.sqlite)|*.sqlite";
+            openFileDialog.InitialDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "LiNK for Windows\\Program Data");
 
             if (openFileDialog.ShowDialog() == true)
                 return openFileDialog.FileName;
