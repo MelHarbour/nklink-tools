@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TcxTools;
+using System.Xml;
 
 namespace LiNKTools.Model
 {
     public class DataRecord
     {
+        XmlDocument doc = new XmlDocument();
+
         public int Id { get; set; }
         public DataRecordType Type { get; set; }
         public int ElapsedTime { get; set; }
@@ -25,8 +28,13 @@ namespace LiNKTools.Model
         {
             Trackpoint trackpoint = new Trackpoint();
             trackpoint.Position = new Position() { LatitudeDegrees = Latitude, LongitudeDegrees = Longitude };
-            trackpoint.Time = startTime.AddMilliseconds(ElapsedTime);
+            trackpoint.Cadence = (byte)StrokeRate;
+            trackpoint.Time = startTime.AddMilliseconds(ElapsedTime).ToUniversalTime();
             trackpoint.HeartRateBpm = new HeartRateInBeatsPerMinute() { Value = (byte)HeartRate };
+
+            XmlElement speed = doc.CreateElement("Speed");
+            speed.InnerText = SpeedGps.ToString();
+            trackpoint.Extensions.Any.Add(speed);
             return trackpoint;
         }
     }
