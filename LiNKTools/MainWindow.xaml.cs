@@ -150,6 +150,8 @@ namespace LiNKTools
                             record.DistanceImpeller = (int)(long)dataRecordReader[7];
                             record.StrokeRate = Convert.ToDouble((long)dataRecordReader[8]) / 2;
                             record.HeartRate = (int)(long)dataRecordReader[9];
+
+                            interval.DataRecords.Add(record);
                         }
 
                         session.Intervals.Add(interval);
