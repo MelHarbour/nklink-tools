@@ -25,7 +25,9 @@ namespace LiNKTools.Services
         public string SaveFileDialog()
         {
             SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Garmin Training Center XML (*.tcx)|*.tcx";
             dialog.DefaultExt = ".tcx";
+            dialog.FileName = "export.tcx";
 
             if (dialog.ShowDialog() == true)
                 return dialog.FileName;
