@@ -9,8 +9,8 @@
     <Grid>
         <TextBox x:Name="textBoxFilePath" HorizontalAlignment="Left" Height="23" Margin="10,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="417" Text="{Binding FilePath}"/>
         <Label x:Name="labelFilePath" Content="File Path" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="170"/>
-        <Button x:Name="buttonBrowse" Content="Browse" HorizontalAlignment="Right" Margin="0,44,10,0" VerticalAlignment="Top" Width="75" Height="23" Click="buttonBrowse_Click"/>
-        <Button x:Name="buttonFetchSessions" Content="Fetch Sessions" Margin="10,86,10,0" VerticalAlignment="Top" Height="33" Click="buttonFetchSessions_Click"/>
+        <Button x:Name="buttonBrowse" Content="Browse" HorizontalAlignment="Right" Margin="0,44,10,0" VerticalAlignment="Top" Width="75" Height="23" Command="{Binding BrowseCommand}"/>
+        <Button x:Name="buttonFetchSessions" Content="Fetch Sessions" Margin="10,86,10,0" VerticalAlignment="Top" Height="33" Command="{Binding FetchCommand}"/>
         <ListBox x:Name="listBoxSessions" Height="177" Margin="10,0,10,75" VerticalAlignment="Bottom" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Sessions}" SelectedItem="{Binding Path=SelectedSession, Mode=TwoWay}">
             <ListBox.ItemTemplate>
                 <DataTemplate>

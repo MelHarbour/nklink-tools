@@ -23,6 +23,8 @@ namespace LiNKTools.ViewModels
         private string outputFilePath;
         private Session selectedSession;
         private RelayCommand exportCommand;
+        private RelayCommand fetchCommand;
+        private RelayCommand browseCommand;
         private ObservableCollection<Session> sessions = new ObservableCollection<Session>();
 
         public RelayCommand ExportCommand
@@ -32,6 +34,26 @@ namespace LiNKTools.ViewModels
                 if (exportCommand == null)
                     exportCommand = new RelayCommand(param => Export(), param => CanExport);
                 return exportCommand;
+            }
+        }
+
+        public RelayCommand FetchCommand
+        {
+            get
+            {
+                if (fetchCommand == null)
+                    fetchCommand = new RelayCommand(param => Fetch(), param => CanFetch);
+                return fetchCommand;
+            }
+        }
+
+        public RelayCommand BrowseCommand
+        {
+            get
+            {
+                if (browseCommand == null)
+                    browseCommand = new RelayCommand(param => Browse());
+                return browseCommand;
             }
         }
 
@@ -196,6 +218,53 @@ namespace LiNKTools.ViewModels
             {
                 return SelectedSession != null;
             }
+        }
+
+        void Fetch()
+        {
+            DbProviderFactory fact = DbProviderFactories.GetFactory("System.Data.SQLite");
+            using (SQLiteConnection cnn = (SQLiteConnection)fact.CreateConnection())
+            {
+                cnn.ConnectionString = "Data Source=" + FilePath;
+                cnn.Open();
+
+                SQLiteCommand command = new SQLiteCommand(
+                    "SELECT PK_SessionId, Name, StartTime, TotalElapsedTime, TotalDistance, AverageStrokeRate, AverageHeartRate, AverageSpeed, SpeedInput FROM Sessions", cnn);
+
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int id = (int)(long)reader[0];
+                    string name = (string)reader[1];
+                    DateTime startTime = NKDateTimeConverter.NKToClr((long)reader[2]);
+                    int totalElapsedTime = (int)(long)reader[3];
+                    int totalDistance = (int)(long)reader[4];
+                    double strokeRate = Convert.ToDouble((long)reader[5]) / 2;
+                    int averageHeartRate = reader.IsDBNull(6) ? 0 : (int)(long)reader[6];
+                    double speed = ((double)reader[7]) / 100;
+                    SpeedInput input = (SpeedInput)(long)reader[8];
+
+                    Sessions.Add(new Session(id, name, startTime, totalElapsedTime, totalDistance, strokeRate, averageHeartRate, speed, input));
+                }
+
+                reader.Close();
+            }
+        }
+
+        bool CanFetch
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(FilePath);
+            }
+        }
+
+        void Browse()
+        {
+            string selectedFilePath = FileService.OpenFileDialog();
+            if (!string.IsNullOrEmpty(selectedFilePath))
+                FilePath = selectedFilePath;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
