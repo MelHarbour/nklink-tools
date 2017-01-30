@@ -37,36 +37,36 @@ namespace LiNKTools.ViewModels
             add
             {
                 CommandManager.RequerySuggested += value;
-                this.CanExecuteChangedInternal += value;
+                CanExecuteChangedInternal += value;
             }
             remove
             {
                 CommandManager.RequerySuggested -= value;
-                this.CanExecuteChangedInternal -= value;
+                CanExecuteChangedInternal -= value;
             }
         }
 
         public bool CanExecute(object parameter)
         {
-            return this.canExecute != null && this.canExecute(parameter);
+            return canExecute != null && canExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            this.execute(parameter);
+            execute(parameter);
         }
 
         public void OnCanExecuteChanged()
         {
-            EventHandler handler = this.CanExecuteChangedInternal;
+            EventHandler handler = CanExecuteChangedInternal;
             if (handler != null)
                 handler.Invoke(this, EventArgs.Empty);
         }
 
         public void Destroy()
         {
-            this.canExecute = _ => false;
-            this.execute = _ => { return; };
+            canExecute = _ => false;
+            execute = _ => { return; };
         }
 
         private static bool DefaultCanExecute(object parameter)

@@ -30,7 +30,7 @@ namespace LiNKTools.ViewModels
             get
             {
                 if (exportCommand == null)
-                    exportCommand = new RelayCommand(param => this.Export(), param => this.CanExport);
+                    exportCommand = new RelayCommand(param => Export(), param => CanExport);
                 return exportCommand;
             }
         }
