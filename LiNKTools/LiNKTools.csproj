@@ -101,6 +101,7 @@
     <Compile Include="Model\DataRecord.cs" />
     <Compile Include="Model\Interval.cs" />
     <Compile Include="Model\NKDateTimeConverter.cs" />
+    <Compile Include="Model\NKEmpowerExtensions.cs" />
     <Compile Include="Model\Session.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IFileService.cs" />

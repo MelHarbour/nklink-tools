@@ -117,8 +117,10 @@ namespace LiNKTools.ViewModels
                     command.Parameters.Add(sessionParam);
 
                     SQLiteCommand dataRecordCommand = new SQLiteCommand(
-                        "SELECT PK_DataRecordId, ElapsedTime, Latitude, Longitude, SpeedGps, SpeedImpeller, DistanceGps, DistanceImpeller, StrokeRate, HeartRate" +
-                        " FROM DataRecords WHERE FK_IntervalId = @intervalId AND Type = 0", cnn); // Type filtered to 0 to just pick up strokes
+                        "SELECT dr.PK_DataRecordId, dr.ElapsedTime, dr.Latitude, dr.Longitude, dr.SpeedGps, dr.SpeedImpeller, dr.DistanceGps, dr.DistanceImpeller, dr.StrokeRate, dr.HeartRate," +
+                        " osd.Power, osd.CatchAngle, osd.FinishAngle, osd.PositionOfMaxForce, osd.AverageHandleForce, osd.MaxHandleForce, osd.Slip, osd.Wash, osd.RealWorkPerStroke" +
+                        " FROM DataRecords dr LEFT OUTER JOIN OarlockStrokeData osd ON osd.PK_OarlockStrokeRecordId = (SELECT PK_OarlockStrokeRecordId FROM OarlockStrokeData WHERE FK_DataRecordId = dr.PK_DataRecordId LIMIT 1)" +
+                        " WHERE dr.FK_IntervalId = @intervalId AND dr.Type = 0", cnn); // Type filtered to 0 to just pick up strokes
 
                     SQLiteParameter intervalParam = new SQLiteParameter("intervalId", System.Data.DbType.Int32);
                     dataRecordCommand.Parameters.Add(intervalParam);
@@ -154,6 +156,15 @@ namespace LiNKTools.ViewModels
                             record.DistanceImpeller = (int)(long)dataRecordReader[7];
                             record.StrokeRate = Convert.ToDouble((long)dataRecordReader[8]) / 2;
                             record.HeartRate = (int)(long)dataRecordReader[9];
+                            record.Power = dataRecordReader.IsDBNull(10) ? 0 : Convert.ToDouble((long)dataRecordReader[10]) / 10;
+                            record.CatchAngle = dataRecordReader.IsDBNull(11) ? 0 : (int)(long)dataRecordReader[11];
+                            record.FinishAngle = dataRecordReader.IsDBNull(12) ? 0 : (int)(long)dataRecordReader[12];
+                            record.MaxForceAngle = dataRecordReader.IsDBNull(13) ? 0 : (int)(long)dataRecordReader[13];
+                            record.AvgHandleForce = dataRecordReader.IsDBNull(14) ? 0 : Convert.ToDouble((long)dataRecordReader[14]) / 10;
+                            record.MaxHandleForce = dataRecordReader.IsDBNull(15) ? 0 : Convert.ToDouble((long)dataRecordReader[15]) / 10;
+                            record.SlipAngle = dataRecordReader.IsDBNull(16) ? 0 : (int)(long)dataRecordReader[16];
+                            record.WashAngle = dataRecordReader.IsDBNull(17) ? 0 : (int)(long)dataRecordReader[17];
+                            record.WorkPerStroke = dataRecordReader.IsDBNull(18) ? 0 : Convert.ToDouble((long)dataRecordReader[18]) / 10;
 
                             interval.DataRecords.Add(record);
                         }

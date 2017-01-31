@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://tempuri.org/XMLSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/XMLSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="NKX" type="NKEmpowerTrackpointExtension_t"/>
+  <xs:complexType name="NKEmpowerTrackpointExtension_t">
+    <xs:sequence>
+      <xs:element name="Watts" type="xs:double" minOccurs="0" />
+      <xs:element name="CatchAngle" type="xs:int" minOccurs="0" />
+      <xs:element name="FinishAngle" type="xs:int" minOccurs="0" />
+      <xs:element name="MaxForceAngle" type="xs:int" minOccurs="0" />
+      <xs:element name="AvgHandleForce" type="xs:double" minOccurs="0" />
+      <xs:element name="MaxHandleForce" type="xs:double" minOccurs="0" />
+      <xs:element name="SlipAngle" type="xs:int" minOccurs="0" />
+      <xs:element name="WashAngle" type="xs:int" minOccurs="0" />
+      <xs:element name="WorkPerStroke" type="xs:double" minOccurs="0" />
+      <xs:element name="Speed" type="xs:double" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
