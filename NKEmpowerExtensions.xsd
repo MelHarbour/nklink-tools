@@ -17,6 +17,7 @@
       <xs:element name="WashAngle" type="xs:int" minOccurs="0" />
       <xs:element name="WorkPerStroke" type="xs:double" minOccurs="0" />
       <xs:element name="Speed" type="xs:double" minOccurs="0" />
+      <xs:element name="StrokeRate" type="xs:double" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

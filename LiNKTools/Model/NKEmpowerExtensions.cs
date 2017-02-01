@@ -23,6 +23,9 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://tempuri.org/XMLSchema.xsd")]
 [System.Xml.Serialization.XmlRootAttribute("NKX", Namespace = "http://tempuri.org/XMLSchema.xsd", IsNullable = false)]
 public partial class NKEmpowerTrackpointExtension_t {
+    private double strokeRateField;
+
+    private bool strokeRateFieldSpecified;
 
     private double speedField;
 
@@ -63,6 +66,33 @@ public partial class NKEmpowerTrackpointExtension_t {
     private double workPerStrokeField;
 
     private bool workPerStrokeFieldSpecified;
+
+    /// <remarks/>
+    public double StrokeRate
+    {
+        get
+        {
+            return this.strokeRateField;
+        }
+        set
+        {
+            this.strokeRateField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIgnoreAttribute()]
+    public bool StrokeRateSpecified
+    {
+        get
+        {
+            return this.strokeRateFieldSpecified;
+        }
+        set
+        {
+            this.strokeRateFieldSpecified = value;
+        }
+    }
 
     /// <remarks/>
     public double Speed
